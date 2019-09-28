@@ -39,8 +39,7 @@ import os
 from scipy.misc import imresize
 import argparse
 
-imagestore = []
-
+# parsing parameters
 parser = argparse.ArgumentParser(description='Source Video path')
 parser.add_argument('source_vid_path', type=str)
 parser.add_argument('fps', type=int)
@@ -48,6 +47,7 @@ args = parser.parse_args()
 
 video_source_path = args.source_vid_path
 fps = args.fps
+image_store = []
 
 
 def create_dir(path):
@@ -56,22 +56,20 @@ def create_dir(path):
 
 
 def remove_old_images(path):
-    filelist = glob.glob(os.path.join(path, "*.png"))
-    for f in filelist:
+    file_list = glob.glob(os.path.join(path, "*.*"))
+    for f in file_list:
         os.remove(f)
 
 
-def store(image_path):
-    img = load_img(image_path)
+def convert_to_vector(path):
+    img = load_img(path)
     img = img_to_array(img)
 
     # Resize the Image to (227,227,3) for the network to be able to process it.
     img = imresize(img, (227, 227, 3))
 
     # Convert the Image to Grayscale
-    gray = 0.2989 * img[:, :, 0] + 0.5870 * img[:, :, 1] + 0.1140 * img[:, :, 2]
-
-    imagestore.append(gray)
+    return 0.2989 * img[:, :, 0] + 0.5870 * img[:, :, 1] + 0.1140 * img[:, :, 2]
 
 
 # List of all Videos in the Source Directory.
@@ -80,27 +78,25 @@ print("Found ", len(videos), " training video")
 
 # Make a temp dir to store all the frames
 create_dir(video_source_path + '/frames')
-
 # Remove old images
 remove_old_images(video_source_path + '/frames')
 
-framepath = video_source_path + '/frames'
-
+# Capture video frames
 for video in videos:
     os.system('ffmpeg -i {}/{} -r 1/{}  {}/frames/%03d.jpg'.format(video_source_path, video, fps, video_source_path))
-    images = os.listdir(framepath)
+    images = os.listdir(video_source_path + '/frames')
     for image in images:
-        image_path = framepath + '/' + image
-        store(image_path)
+        image_path = video_source_path + '/frames' + '/' + image
+        image_store.append(convert_to_vector(image_path))
 
-imagestore = np.array(imagestore)
-a, b, c = imagestore.shape
+image_store = np.array(image_store)
+a, b, c = image_store.shape
 # Reshape to (227,227,batch_size)
-imagestore.resize(b, c, a)
+image_store.resize(b, c, a)
 # Normalize
-imagestore = (imagestore - imagestore.mean()) / (imagestore.std())
+image_store = (image_store - image_store.mean()) / (image_store.std())
 # Clip negative Values
-imagestore = np.clip(imagestore, 0, 1)
-np.save('training.npy', imagestore)
+image_store = np.clip(image_store, 0, 1)  # 0, 1 사이를 벗어나는 값은 0, 1로 치환
+np.save('training.npy', image_store)
 # Remove Buffer Directory
-os.system('rm -r {}'.format(framepath))
+os.system('rm -r {}'.format(video_source_path + '/frames'))

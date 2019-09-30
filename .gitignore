@@ -2,3 +2,5 @@
 /venv/
 /train/
 /training.npy
+/*.h5
+/test.npy

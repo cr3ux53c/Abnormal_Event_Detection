@@ -1,4 +1,4 @@
-''' The training Module to train the SpatioTemporal AutoEncoder
+""" The training Module to train the SpatioTemporal AutoEncoder
 
 Run:
 
@@ -11,7 +11,7 @@ Run:
 Author: Harsh Tiku
 
 
-'''
+"""
 
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from model import load_model

@@ -61,6 +61,8 @@ def load_model():
     model.add(
         Conv3DTranspose(filters=1, kernel_size=(11, 11, 1), strides=(4, 4, 1), padding='valid', activation='tanh'))
 
-    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    model.compile(optimizer='adam',  # We use Adam optimizer to allow it taking the role of setting
+                  # the learning rate automatically based on the models weight update history.
+                  loss='mean_squared_error', metrics=['accuracy'])
 
     return model

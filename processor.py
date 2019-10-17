@@ -84,7 +84,7 @@ remove_old_images(video_source_path + '/frames')
 
 # Capture video frames
 for video in videos:
-    os.system('ffmpeg -i {}/{} -r 1/{}  {}/frames/%03d.jpg'.format(video_source_path, video, fps, video_source_path))
+    os.system('ffmpeg -i {}/{} -r 1/{}  {}/frames/{}-%03d.jpg'.format(video_source_path, video, fps, video_source_path, video))
     images = os.listdir(video_source_path + '/frames')
     for image in images:
         image_path = video_source_path + '/frames' + '/' + image
@@ -100,4 +100,4 @@ image_store = (image_store - image_store.mean()) / (image_store.std())
 image_store = np.clip(image_store, 0, 1)  # 0, 1 사이를 벗어나는 값은 0, 1로 치환
 np.save(args.save_file_name, image_store)
 # Remove Buffer Directory
-os.system('rm -r {}'.format(video_source_path + '/frames'))
+# os.system('rm -r {}'.format(video_source_path + '/frames')) # Linux only

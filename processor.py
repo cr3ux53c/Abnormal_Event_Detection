@@ -43,6 +43,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Source Video path')
 parser.add_argument('source_vid_path', type=str)
 parser.add_argument('fps', type=int)
+parser.add_argument('save_file_name', type=str)
 args = parser.parse_args()
 
 video_source_path = args.source_vid_path
@@ -97,6 +98,6 @@ image_store.resize(b, c, a)
 image_store = (image_store - image_store.mean()) / (image_store.std())
 # Clip negative Values
 image_store = np.clip(image_store, 0, 1)  # 0, 1 사이를 벗어나는 값은 0, 1로 치환
-np.save('training.npy', image_store)
+np.save(args.save_file_name, image_store)
 # Remove Buffer Directory
 os.system('rm -r {}'.format(video_source_path + '/frames'))

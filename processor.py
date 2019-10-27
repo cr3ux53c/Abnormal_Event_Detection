@@ -38,6 +38,7 @@ import glob
 import os
 from scipy.misc import imresize
 import argparse
+from PIL import Image
 
 # parsing parameters
 parser = argparse.ArgumentParser(description='Source Video path')
@@ -67,10 +68,10 @@ def convert_to_vector(path):
     img = img_to_array(img)
 
     # Resize the Image to (227,227,3) for the network to be able to process it.
-    img = imresize(img, (227, 227, 3))
+    img = imresize(img, (227, 227, 3))  # `imresize` is deprecated in SciPy 1.0.0, and will be removed in 1.3.0.
 
     # Convert the Image to Grayscale
-    return 0.2989 * img[:, :, 0] + 0.5870 * img[:, :, 1] + 0.1140 * img[:, :, 2]
+    return 0.2989 * img[:, :, 0] + 0.5870 * img[:, :, 1] + 0.1140 * img[:, :, 2]  # RGB to YIQ Convert (RGB 색상에 대한 인간의 인지/감각의 차이에 의한 상수값
 
 
 # List of all Videos in the Source Directory.
@@ -80,7 +81,7 @@ print("Found ", len(videos), " training video")
 # Make a temp dir to store all the frames
 create_dir(video_source_path + '/frames')
 # Remove old images
-remove_old_images(video_source_path + '/frames')
+# remove_old_images(video_source_path + '/frames')
 
 # Capture video frames
 for video in videos:
@@ -91,6 +92,7 @@ for video in videos:
         image_store.append(convert_to_vector(image_path))
 
 image_store = np.array(image_store)
+
 a, b, c = image_store.shape
 # Reshape to (227,227,batch_size)
 image_store.resize(b, c, a)

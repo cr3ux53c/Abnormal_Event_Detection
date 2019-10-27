@@ -42,16 +42,16 @@ Lower the Threshhold,higher the chances that a bunch of frames will be flagged a
 
 '''
 
-threshold = 0.1
+threshold = 0.00043
 
-model = load_model('AnomalyDetector.h5')
+model = load_model('AnomalyDetector-100epochs-5fps.h5')
 
 X_test = np.load('test.npy')
 frames = X_test.shape[2]
 # Need to make number of frames divisible by 10
 
 
-flag = 0  # Overall video flagq
+flag = 0  # Overall video flag
 
 frames = frames - frames % 10
 

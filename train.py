@@ -41,7 +41,7 @@ if __name__ == "__main__":
     model = load_model()
 
     callback_save = ModelCheckpoint("AnomalyDetector.h5",
-                                    monitor="mean_squared_error", save_best_only=True)
+                                    monitor="mean_squared_error", save_best_only=False)
 
     callback_early_stopping = EarlyStopping(monitor='val_loss', patience=3)
 

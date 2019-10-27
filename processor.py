@@ -85,11 +85,13 @@ create_dir(video_source_path + '/frames')
 
 # Capture video frames
 for video in videos:
+    # pass
     os.system('ffmpeg -i {}/{} -r 1/{}  {}/frames/{}-%03d.jpg'.format(video_source_path, video, fps, video_source_path, video))
-    images = os.listdir(video_source_path + '/frames')
-    for image in images:
-        image_path = video_source_path + '/frames' + '/' + image
-        image_store.append(convert_to_vector(image_path))
+images = os.listdir(video_source_path + '/frames')
+for image in images:
+    image_path = video_source_path + '/frames' + '/' + image
+    vector = convert_to_vector(image_path)
+    image_store.append(vector)
 
 image_store = np.array(image_store)
 

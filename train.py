@@ -21,10 +21,11 @@ import argparse
 # Running arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('n_epochs', type=int)
+parser.add_argument('dataset', type=str)
 
 args = parser.parse_args()
 
-X_train = np.load('training.npy')
+X_train = np.load(args.dataset)
 frames = X_train.shape[2]  # X x Y x batch
 
 # Need to make number of frames divisible by 10
@@ -40,7 +41,7 @@ batch_size = 1
 if __name__ == "__main__":
     model = load_model()
 
-    callback_save = ModelCheckpoint("AnomalyDetector.h5",
+    callback_save = ModelCheckpoint("dev-5fps-1000epochs.h5",
                                     monitor="mean_squared_error", save_best_only=False)
 
     callback_early_stopping = EarlyStopping(monitor='val_loss', patience=3)

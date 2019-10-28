@@ -20,6 +20,13 @@ Author: Harsh Tiku
 
 from keras.models import load_model
 import numpy as np
+import argparse
+
+# Parsing arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('model', type=str)
+parser.add_argument('dataset', type=str)
+args = parser.parse_args()
 
 
 def mean_squared_loss(x1, x2):
@@ -44,9 +51,9 @@ Lower the Threshhold,higher the chances that a bunch of frames will be flagged a
 
 threshold = 0.00043
 
-model = load_model('AnomalyDetector-100epochs-5fps.h5')
+model = load_model(args.model)
 
-X_test = np.load('test.npy')
+X_test = np.load(args.dataset)
 frames = X_test.shape[2]
 # Need to make number of frames divisible by 10
 

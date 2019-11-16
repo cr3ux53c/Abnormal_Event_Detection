@@ -1,4 +1,5 @@
-''' Source Code for the SpatioTemporal AutoEncoder as described in the paper
+"""
+Source Code for the SpatioTemporal AutoEncoder as described in the paper
 
 Abnormal Event Detection in Videos using Spatiotemporal Autoencoder
 by Yong Shean Chong Yong Haur Tay
@@ -6,18 +7,12 @@ Lee Kong Chian Faculty of Engineering Science, Universiti Tunku Abdul Rahman, 43
 
 Implemented in keras
 
-
-
 The model has over a Million trainable Params so I recommend training it on a GPU.
-
-
 
 The model takes input a batch of 10 of Video frames of size (227,227) (grayscaled)
 
 Extracts spatial and temporal Information and computes the reconstruction loss by Euclidean Distance b/w
 original batch and Reconstructed batch
-
-
 
 See model summary as:
 
@@ -25,13 +20,8 @@ See model summary as:
 >>mod=load_model()
 >>mod.summary()
 
-
-
-
-
 Author: Harsh Tiku
-
-'''
+"""
 
 from keras.layers import Conv3D, ConvLSTM2D, Conv3DTranspose
 from keras.models import Sequential

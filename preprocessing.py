@@ -18,9 +18,9 @@ __________________________________________________________________
 
 Usage:
 
-python3 processor.py video_dir_path time_in_seconds_to_extract_one_frame
+python3 preprocessing.py video_dir_path time_in_seconds_to_extract_one_frame
 
-eg;python3 processor.py ./train 5   will search for train directory and for each video in train directory
+eg;python3 preprocessing.py ./train 5   will search for train directory and for each video in train directory
 
 It will extract 1 frame every 5 seconds and store it.
 

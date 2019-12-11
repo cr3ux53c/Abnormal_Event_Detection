@@ -1,16 +1,11 @@
-""" The training Module to train the SpatioTemporal AutoEncoder
+"""
+The training Module to train the SpatioTemporal AutoEncoder
 
 Run:
 
->>python3 train.py n_epochs(enter integer)     to begin training.
-
-
-
-
+>>python3 train.py n_epochs(enter integer) to begin training.
 
 Author: Harsh Tiku
-
-
 """
 
 from keras.callbacks import ModelCheckpoint, EarlyStopping
@@ -21,6 +16,7 @@ import argparse
 # Running arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('n_epochs', type=int)
+parser.add_argument('model_path_to_save', type=str)
 parser.add_argument('dataset', type=str)
 
 args = parser.parse_args()
@@ -41,9 +37,7 @@ batch_size = 1
 if __name__ == "__main__":
     model = load_model()
 
-    callback_save = ModelCheckpoint("dev-5fps-1000epochs.h5",
-                                    monitor="mean_squared_error", save_best_only=False)
-
+    callback_save = ModelCheckpoint(args.model_path_to_save, monitor="mean_squared_error", save_best_only=False)
     callback_early_stopping = EarlyStopping(monitor='val_loss', patience=3)
 
     print('Model has been loaded')

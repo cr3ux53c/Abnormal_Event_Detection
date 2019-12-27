@@ -48,7 +48,6 @@ parser.add_argument('save_file_name', type=str)
 args = parser.parse_args()
 
 video_source_path = args.source_vid_path
-fps = args.fps
 image_store = []
 
 
@@ -74,24 +73,57 @@ def convert_to_vector(path):
     return 0.2989 * img[:, :, 0] + 0.5870 * img[:, :, 1] + 0.1140 * img[:, :, 2]  # RGB to YIQ Convert (RGB 색상에 대한 인간의 인지/감각의 차이에 의한 상수값
 
 
+def move_to_evaluation(path, eval_path):
+    os.system('move %s %s' % (path, eval_path))
+
+def move_to_evaluation_with_rename(path, eval_path, index):
+    images = os.listdir(path)
+    images = [image for image in images if image.endswith('.jpg')]
+    for image in images:
+        os.rename(path + image, eval_path + index + '.jpg')
+
+# def create_bunch_video(video_filename, bunch_numer, path, path_to_save):
+#     os.system('ffmpeg -r 25 -i {0}/{1}-%03d.jpg -vcodec mpeg4 -b 100k {2}/{3}-{4}.avi'.format(path, video_filename, path_to_save, video_filename, bunch_numer))
+
+
 # List of all Videos in the Source Directory.
 videos = os.listdir(video_source_path)
+videos = [video for video in videos if video.endswith('.avi')]
+
 print("Found ", len(videos), " training video")
 
 # Make a temp dir to store all the frames
 create_dir(video_source_path + '/frames')
 # Remove old images
-# remove_old_images(video_source_path + '/frames')
+remove_old_images(video_source_path + '/frames')
+
+index = 1
 
 # Capture video frames
 for video in videos:
     # pass
-    os.system('ffmpeg -i {}/{} -r 1/{}  {}/frames/{}-%03d.jpg'.format(video_source_path, video, fps, video_source_path, video))
-images = os.listdir(video_source_path + '/frames')
-for image in images:
-    image_path = video_source_path + '/frames' + '/' + image
-    vector = convert_to_vector(image_path)
-    image_store.append(vector)
+    print('ffmpeg capturing %s file...' % video)
+    os.system(
+        'ffmpeg -i {}/{} -r {}  {}/frames/{}-%04d.jpg'.format(video_source_path, video, args.fps, video_source_path,
+                                                              video))
+    images = os.listdir(video_source_path + '/frames')
+    for i in range(images.__len__() - int(images.__len__() % 10)):
+        print('\tAdding %04dth image to vector' % i)
+        image_path = video_source_path + '/frames' + '/' + images[i]
+        vector = convert_to_vector(image_path)
+        image_store.append(vector)
+
+    # create_bunch_video(video.__str__(), 1, video_source_path + '/frames', 'evaluation/images')
+    for f in images[images.__len__() - int(images.__len__() % 10):]:
+        os.remove(video_source_path + '/frames/' + f)
+    # move_to_evaluation('.\\test\\frames\\*.jpg', 'evaluation\\images')
+    images = os.listdir(video_source_path + '/frames')
+    images = [image for image in images if image.endswith('.jpg')]
+    # for image in images:
+    #     os.rename(video_source_path + '/frames/' + image, 'evaluation/images/' + str(index) + '.jpg')
+    #     index += 1
+
+    remove_old_images(video_source_path + '/frames')
 
 image_store = np.array(image_store)
 
@@ -100,7 +132,7 @@ a, b, c = image_store.shape
 image_store.resize(b, c, a)
 # Normalize
 image_store = (image_store - image_store.mean()) / (image_store.std())
-# Clip negative Values
+# Scaling - Clip negative Values
 image_store = np.clip(image_store, 0, 1)  # 0, 1 사이를 벗어나는 값은 0, 1로 치환
 np.save(args.save_file_name, image_store)
 # Remove Buffer Directory

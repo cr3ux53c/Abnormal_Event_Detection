@@ -45,7 +45,6 @@ def mean_squared_loss(x1, x2):
 
 '''Define threshold for Sensitivity
 Lower the Threshhold,higher the chances that a bunch of frames will be flagged as Anomalous.
-
 '''
 
 # threshold = 0.0004 # 사람이 큰 것들이 나타났을 때 검출
@@ -57,26 +56,11 @@ model = load_model(args.model)
 
 X_test = np.load(args.dataset)
 frames = X_test.shape[2]
-# Need to make number of frames divisible by 10
-
-
 flag = 0  # Overall video flag
-
+# Need to make number of frames divisible by 10
 frames = frames - frames % 10
 
 X_test = X_test[:, :, :frames]
-
-# X_test_overlapped = np.empty((227, 227, (int(frames * 2))), float)
-#
-# for width in range(227):
-#     for height in range(227):
-#         for start_idx in range(0, frames - 9, 5):
-#             X_test_overlapped[width, height, start_idx * 2:start_idx * 2 + 10] = X_test[width, height, start_idx:start_idx + 10]
-#
-# X_test_overlapped = X_test_overlapped[:, :, :frames * 2]
-# X_test_overlapped = X_test_overlapped.reshape(-1, 227, 227, 10)  # 10씩 끊어서
-# X_test_overlapped = np.expand_dims(X_test_overlapped, axis=4)
-
 X_test = X_test.reshape(-1, 227, 227, 10)
 X_test = np.expand_dims(X_test, axis=4)
 
@@ -105,7 +89,7 @@ for number, bunch in enumerate(X_test):
 if flag == 1:
     print("Anomalous Events detected")
 
-# Evaluate Regularity score
+# Evaluate Regularity-score
 reconstruction_errors = np.asarray(reconstruction_errors)
 abnormal_score = minmax_scale(reconstruction_errors)
 regularity_score = 1 - abnormal_score

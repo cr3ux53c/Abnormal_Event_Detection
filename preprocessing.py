@@ -2,7 +2,7 @@
 This module extracts frames a Video performs preprocessing on the frames and stores them in a Numpy array for furthur use by the spatiotemporal autoencoder
 
 Usage:
-python preprocessing.py video_dir_path time_in_seconds_to_extract_one_frame filename_to_save_as_numpy
+>>python preprocessing.py video_dir_path time_in_seconds_to_extract_one_frame filename_to_save_as_numpy
 
 eg;python3 preprocessing.py ./train 5 data.npy will search for train directory and for each video in train directory
 It will extract 1 frame every 5 seconds and store it.
@@ -65,6 +65,8 @@ for video in videos:
     print('ffmpeg capturing %s file...' % video)
     os.system('ffmpeg -i {}/{} -r {}  {}/frames/{}-%04d.jpg'.format(args.source_vid_path, video, args.fps, args.source_vid_path, video))
     images = os.listdir(args.source_vid_path + '/frames')
+
+    # Discard rest of divided by 10 per video
     for i in range(images.__len__() - int(images.__len__() % 10)):
         print('\tAdding %04dth image to vector' % i)
         image_store.append(convert_to_vector(args.source_vid_path + '/frames/' + images[i]))

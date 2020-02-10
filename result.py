@@ -2,6 +2,7 @@ import numpy as np
 import argparse
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import minmax_scale
+from sklearn.metrics import accuracy_score, f1_score
 import math
 
 # Parsing arguments
@@ -69,13 +70,16 @@ for i, value in enumerate(expanded_predictions):
     if value == 1:
         plt.axvspan(i, i, alpha=0.3, color='orange')
 
-plt.title('Abnormal detection from Regularity score by threshold (Threshold: %f) / Accuracy: %f' % (0.000179, 0))
+# Calc accuracy
+accuracy = accuracy_score(gt_by_all_video_flatten, expanded_predictions)
+f1score = f1_score(gt_by_all_video_flatten, expanded_predictions)
+
+plt.title('Abnormal detection from Regularity score by threshold (Threshold: %f) / Accuracy: %f, F1-Score: %f' % (threshold, accuracy, f1score))
 plt.show()
 plt.clf()
 
 # Reconstruct1D data
 plt.figure(figsize=(80, 5))
-plt.title('Abnormal detection from Reconstruct1D score by threshold (Threshold: %f)' % 0.000179)
 plt.xticks(np.arange(0, gt_by_all_video_flatten.shape[0], step=50), rotation=45)
 for i, value in enumerate(gt_by_all_video_flatten):
     if value == 1:
@@ -98,13 +102,20 @@ if flag == 1:
 # Expand data
 expanded_reconstrct1d_score = IncreaseByTenfold(reconstruct1d_errors)
 expanded_predictions_reconstruct1d = IncreaseByTenfold(predictions_reconstruct1d)
+
+# Calc accuracy
+accuracy = accuracy_score(gt_by_all_video_flatten, expanded_predictions_reconstruct1d)
+f1score = f1_score(gt_by_all_video_flatten, expanded_predictions_reconstruct1d)
+
+
 plt.plot(expanded_regularity_score, color='blue')
 plt.plot(expanded_reconstrct1d_score, color='magenta')
 for i, value in enumerate(expanded_predictions_reconstruct1d):
     if value == 1:
         plt.axvspan(i, i, alpha=0.3, color='orange')
-
+plt.title('Abnormal detection from Reconstruct1D score by threshold (Threshold: %f) / Accuracy: %f, F1-Score: %f' % (threshold_reconstruct1d, accuracy, f1score))
 plt.show()
+plt.clf()
 
 # New Algorithm
 

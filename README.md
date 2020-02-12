@@ -10,6 +10,10 @@ ffmpeg for Windows
 
 Python for Windows (Refer to requirements.txt)
 
+Matlab R2019b
+
+Mosek Optimization Tools 9.1
+
 # Instructions
 
 Run preprocessing.py with args the path of Video directory, frame rate and filename for save.

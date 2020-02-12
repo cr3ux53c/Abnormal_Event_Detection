@@ -22,6 +22,8 @@ Run train.py to train the model
 
 Run test.py to test on testing data.
 
+Run result.py to present results.
+
 Run start_live_feed.py to test the model on live webcam feed.
 
 You can adjust the threshold parameter in test.py to different values to adjust sensitivity
